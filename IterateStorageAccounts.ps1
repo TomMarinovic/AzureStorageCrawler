@@ -50,8 +50,7 @@ Function IterateStorageAccounts
 
     Write-Verbose ("DNS Brute-Force Complete " + (Get-Date -Format "dd/MM/yyyy HH:mm"))
     Write-Verbose ("Starting Container Enumeration" + (Get-Date -Format "dd/MM/yyyy HH:mm"))
-
-    # Extra New Line for Readability
+    
     Write-Host ""
 
     # Get line counts for number of storage accounts for status
@@ -60,13 +59,10 @@ Function IterateStorageAccounts
     # Go through the valid blob storage accounts and confirm Anonymous Access / List files
     foreach ($subDomain in $runningList) {
         $iter = 0
-
-        # Read in file
         $folderContent = Get-Content $Folders
 
         # Folder Names to guess for containers
         foreach ($folderName in $folderContent) {
-            # Track the progress
             $iter++
             $subfolderprogress = ($iter / $foldercount) * 100
 
@@ -88,7 +84,7 @@ Function IterateStorageAccounts
                     # URL for listing publicly available files
                     $uriList = "https://" + $dirGuess + "?restype=container&comp=list"
                     $FileList = (Invoke-WebRequest -Uri $uriList -Method Get).Content
-                    # Microsoft includes these characters in the response, Thanks...
+                    # Microsoft includes these characters in the response
                     [xml]$xmlFileList = $FileList -replace "ï»¿"
                     $foundURL = $xmlFileList.EnumerationResults.Blobs.Blob.Name
 
